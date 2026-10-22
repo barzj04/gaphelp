@@ -1,56 +1,72 @@
 # GapHelp
 
-Turn the dead time before your next thing into one small, safe step.
+Use the gap before your next thing.
 
-**For:** students with ADHD or executive dysfunction who freeze before a scheduled event ("waiting mode") and can't start big, vague tasks.
+**Try it:** https://barzj04.github.io/gaphelp/ (works on phone and laptop, no sign up)
+
+## Why we made this
+I have hours between classes almost every day, and most of the time I end up doing nothing. I scroll, I procrastinate, and then it's time to go. This is called **waiting mode**, and it's really common for people with ADHD. When you have something later, the time before it doesn't feel usable.
+
+GapHelp is for students who get stuck like this, especially with ADHD or executive dysfunction.
 
 ## How it works
-0. **Brain dump (optional):** press 🎙, say everything on your mind (English or Bahasa Melayu), and GapHelp turns it into a task list. You can also type or paste a messy paragraph.
-1. Enter your next event, its start time, and how long you need to get ready.
-2. Add the tasks you're avoiding, most important first (e.g. "finish FYP chapter 3", "reply to lecturer"), and pick your energy level. The list is kept for next time.
-3. GapHelp works out your safe window and breaks your tasks into small steps. It fills the window starting with your top task, then uses quick steps from other tasks to fill leftover minutes. Steps that don't fit are marked for another time.
-4. Focus mode shows one step at a time on a **time disc**: the coloured pie is the time left before you leave, split into this step, the next steps and spare time. It shrinks back toward the top (leave time) as time passes, so you can *see* time instead of reading numbers. Buttons: **Done**, **Too hard: split smaller**, **Skip**, **Pause**, **Read aloud**.
-5. You get a chime and a heads-up a few minutes before leaving, then a full-screen alarm when it's time. You can stop watching the clock.
-6. Unfinished steps are saved and offered next time.
+1. **Brain dump (optional):** tap the mic and just say everything on your mind (English or Bahasa Melayu). GapHelp turns it into a task list. You can also type or paste a messy paragraph.
+2. **Add your next thing:** what it is, when it starts, and how long you need to get ready.
+3. **Add your tasks:** most important first, like "finish FYP chapter 3" or "reply to lecturer". Pick your energy level. Your list is saved for next time.
+4. **Get your plan:** GapHelp works out how much free time you actually have and breaks your tasks into small steps that fit. It starts with your top task, then fills leftover minutes with quick steps from other tasks. Steps that don't fit are saved for later.
+5. **Focus mode:** you see one step at a time on a time disc. The coloured part is the time you have left before you leave, and it shrinks as time goes by, so you can *see* time instead of reading numbers. Buttons: Done, Too hard: split smaller, Skip, Pause, Read aloud.
+6. **Leave alarm:** you get a heads up a few minutes before, then a full screen alarm when it's time to go. So you don't have to keep checking the clock.
+7. Anything you didn't finish is saved for next time.
 
-## Run it
-No build step. Keep all the files together and open `index.html` in Chrome, Edge or Firefox.
+## How to run it
+No setup needed. Keep all the files together and open `index.html` in Chrome, Edge or Firefox.
 
-Installing it as an app and using it offline need a web address (not a double-clicked file):
-- **GitHub Pages:** push the folder → Settings → Pages → deploy from the main branch.
-- **Locally:** run `python -m http.server` in the folder and open http://localhost:8000.
+If you want to install it as an app or use it offline, it needs a web address (not just double clicking the file):
+- **GitHub Pages:** push the folder, then go to Settings → Pages → deploy from the main branch.
+- **On your laptop:** run `python -m http.server` in the folder and open http://localhost:8000.
 
-Then use **📲 Install** in the header (Chrome/Edge/Android), or Share → **Add to Home Screen** on iPhone.
+Then tap **Install** at the top (Chrome, Edge, Android), or on iPhone go to Share → **Add to Home Screen**.
 
+## Files
 | File | What's in it |
 |---|---|
-| `index.html` | Page structure: the 4 screens, alarm overlay, settings dialog |
-| `styles.css` | Colours, fonts, light/dark themes, layout |
-| `app.js` | All logic: storage, sounds, brain dump, planner, AI calls, time disc, timers, alarm |
-| `sw.js` | Service worker: offline support and install |
+| `index.html` | The page: 4 screens, the alarm and the settings popup |
+| `styles.css` | Colours, fonts, light and dark mode, layout |
+| `app.js` | All the logic: saving, sounds, brain dump, planner, AI, time disc, timers, alarm |
+| `sw.js` | Makes it work offline and installable |
 | `manifest.webmanifest` | App name, colours and icons for installing |
 | `icons/` | App icons |
-| `fonts/` | Self-hosted Bricolage Grotesque (headings) and Atkinson Hyperlegible (body), both SIL Open Font License |
-To host it: push to GitHub → Settings → Pages → deploy from the main branch.
+| `fonts/` | Bricolage Grotesque (headings) and Atkinson Hyperlegible (body text), both free under the SIL Open Font License |
 
-## Optional AI steps
-Settings → choose **Anthropic (Claude)** or **Google Gemini** and paste your API key. Default models: `claude-haiku-5-5` and `gemini-2.5-flash` (editable). The key stays in your browser's localStorage and is never in the code, so don't commit it. Without a key, a built-in planner uses step templates for writing, studying, coding, messages and tidying, plus a generic one.
+## AI (optional)
+Go to Settings, pick **Anthropic (Claude)** or **Google Gemini**, and paste your API key. Default models are `claude-haiku-5-5` and `gemini-2.5-flash`, and you can change them.
 
-## Accessibility
-- Voice input for people who find typing hard; visual time disc for time blindness
-- Atkinson Hyperlegible font (designed for low-vision readers), adjustable text size, light/dark themes
-- One step on screen at a time; low-energy mode makes steps smaller
-- Full keyboard control: D done, S split, K skip, P pause, R read aloud
-- Screen-reader announcements for new steps and time warnings
-- Respects reduced-motion settings
-- Alarm uses sound, a flashing screen, a system notification and vibration where supported
+Your key is only saved in your own browser, never in the code. Please don't commit it to GitHub.
 
-## Limitations
-- The event time is typed in; there's no calendar sync yet.
-- The tab must stay open. Browser notifications need permission.
-- Sound needs one click on the page first (browser autoplay rule).
-- Built-in planner steps are generic; AI steps need a key and internet.
+No key? That's fine. The built-in planner still works. It has step templates for writing, studying, coding, messages and tidying, plus a general one.
+
+## Made for everyone
+- Voice input if typing is hard
+- Time disc for time blindness
+- Atkinson Hyperlegible font (made for people with low vision), bigger text option, dark mode
+- Only one step on screen at a time, and low energy mode makes steps smaller
+- Keyboard shortcuts: D done, S split, K skip, P pause, R read aloud
+- Screen reader support for new steps and time warnings
+- Follows your reduced motion setting
+- The alarm uses sound, a flashing screen, a notification and vibration (if your device has it)
+
+## What doesn't work yet
+- You have to type in your event time. No calendar sync yet.
+- The tab has to stay open for the alarm. Notifications need your permission.
+- Sound only works after you click something on the page (browsers block it before that).
+- Built-in steps are general. AI steps need a key and internet.
 - If a model name changes, update it in Settings.
-- Voice input uses the browser's speech recognition: best in Chrome/Edge, needs internet, and isn't available in Firefox (typing still works).
-- The API is called straight from the browser, which is fine for a personal key but not for a public app with a shared key. That would need a small backend.
+- Voice input works best in Chrome and Edge, needs internet, and doesn't work in Firefox (typing still does).
+- The AI is called straight from your browser. That's fine for your own key, but a public app with a shared key would need a small backend.
 
+## Team
+- **Arleen:** idea and coding
+- **Lester:** UI/UX design, demo video and the rest
+
+## AI assistance
+We used Claude (Anthropic) to help plan the project and to generate and optimize the code. We came up with the idea, made the design decisions, tested it and edited it. The app can also use the Claude or Gemini API (optional) to make step plans.
