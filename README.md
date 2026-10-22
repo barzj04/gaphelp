@@ -54,5 +54,3 @@ Settings → choose **Anthropic (Claude)** or **Google Gemini** and paste your A
 - Voice input uses the browser's speech recognition: best in Chrome/Edge, needs internet, and isn't available in Firefox (typing still works).
 - The API is called straight from the browser, which is fine for a personal key but not for a public app with a shared key. That would need a small backend.
 
-## AI assistance
-Fill in before submitting.

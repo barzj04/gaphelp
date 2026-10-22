@@ -1,6 +1,4 @@
-// Makes GapHelp installable and usable offline.
-// App files: network first (so updates show up), cache as offline fallback.
-// Fonts are self-hosted and cached with the app. AI API calls are never cached.
+
 const CACHE = 'gaphelp-v2';
 const CORE = [
   './',

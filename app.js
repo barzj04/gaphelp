@@ -10,11 +10,11 @@
 
   const DEFAULT_MODEL = { anthropic: 'claude-haiku-5-5', gemini: 'gemini-2.5-flash' };
   let settings = Object.assign({ provider: 'anthropic', key: '', model: DEFAULT_MODEL.anthropic, warn: 5, scale: 1, theme: '' }, load('gs_settings', {}));
-  let S = load('gs_state', null); // current session
-  let tasks = load('gs_tasks', []); // the user's task list, kept between sessions
+  let S = load('gs_state', null); 
+  let tasks = load('gs_tasks', []); 
   const saveState = () => store('gs_state', S);
 
-  // "3:00 PM", "tomorrow 3:00 PM" or "Fri 24 Oct, 3:00 PM"
+  
   function fmtTime(ms) {
     const d = new Date(ms), t = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
     const day = (x) => new Date(x).toDateString();
@@ -22,7 +22,7 @@
     if (day(ms) === day(Date.now() + 864e5)) return `tomorrow ${t}`;
     return `${d.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' })}, ${t}`;
   }
-  // "42 min" or "3 h 15 min"
+
   function fmtDur(min) {
     if (min < 90) return `${min} min`;
     const h = Math.floor(min / 60), m = min % 60;
@@ -150,8 +150,6 @@
     ].map((s) => ({ ...s, task: step.task }));
   }
 
-  // Fill the window: tasks in priority order, steps kept in order within a task.
-  // If a task's next step doesn't fit, stop that task and let a later (quicker) task fill the leftover minutes.
   function pack(steps, gap) {
     const fit = [], rest = [], blocked = new Set();
     let used = 0;
@@ -172,7 +170,7 @@
         'content-type': 'application/json',
         'x-api-key': settings.key,
         'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true' // allows calling from a browser page
+        'anthropic-dangerous-direct-browser-access': 'true' 
       },
       body: JSON.stringify({
         model: settings.model,
@@ -488,7 +486,6 @@
     }
     $('#startBtn').hidden = false; $('#regenBtn').hidden = false;
 
-    // first step must fit
     if (S.steps[0] && S.steps[0].minutes > gap) S.steps[0].minutes = Math.max(1, gap - 1);
 
     let acc = 0, fit = 0, shownDivider = false;
@@ -654,8 +651,6 @@
   $('#goingBtn').addEventListener('click', () => finish('leave'));
 
   // ---------- time disc (Time Timer style) ----------
-  // Top (12 o'clock) = when you leave. The coloured pie = time left, and it shrinks back
-  // toward the top as time passes. Slices = this step, then the next steps, then spare time.
   const C = 100, R_OUT = 96, R_IN = 60;
   function polar(a, r) {
     const rad = ((a - 90) * Math.PI) / 180;
