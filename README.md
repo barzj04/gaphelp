@@ -2,7 +2,7 @@
 
 Use the gap before your next thing.
 
-**Try it:** https://barzj04.github.io/gaphelp/ (works on phone and laptop, no sign up)
+**Try it:** https://github.com/barzj04/gaphelp (works on phone and laptop, no sign up)
 
 ## Why we made this
 I have hours between classes almost every day, and most of the time I end up doing nothing. I scroll, I procrastinate, and then it's time to go. This is called **waiting mode**, and it's really common for people with ADHD. When you have something later, the time before it doesn't feel usable.
