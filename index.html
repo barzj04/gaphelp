@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GapHelp</title>
+<meta name="description" content="Turn the dead time before your next thing into one small, safe step.">
+<link rel="stylesheet" href="styles.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1b1a17">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="GapHelp">
+</head>
+<body>
+<!-- Icons: one consistent line set, used as <svg class="ic"><use href="#i-name"/></svg> -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="m5 12 7-7 7 7M12 19V5"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4"/></symbol>
+  <symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15L19 12z"/></symbol>
+  <symbol id="i-skip" viewBox="0 0 24 24"><path d="M5 5v14l10-7zM19 5v14"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.5"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36L21 8M21 3v5h-5"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-split" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12"/></symbol>
+</svg>
+<div class="wrap">
+  <header>
+    <div class="brand"><img src="icons/icon-192.png" width="26" height="26" alt="" class="brand-icon">GapHelp</div>
+    <div class="row">
+      <span id="leavePill" class="pill" hidden></span>
+      <button id="installBtn" class="ghost" hidden><svg class="ic"><use href="#i-download"/></svg>Install</button>
+      <button id="settingsBtn" class="ghost"><svg class="ic"><use href="#i-sliders"/></svg>Settings</button>
+    </div>
+  </header>
+
+  <!-- 1. SETUP -->
+  <section id="setup" class="screen card" aria-labelledby="setupTitle">
+    <h1 id="setupTitle" tabindex="-1">Use the gap before your next thing.</h1>
+    <p class="muted">Tell me when you need to leave and what you're avoiding. I'll give you one small step at a time, and I'll make sure you leave on time.</p>
+
+    <div id="laterBanner" class="banner" hidden>
+      <label class="row" style="margin:0;font-weight:400">
+        <input type="checkbox" id="useLater" style="width:auto">
+        <span>Continue <strong id="laterCount"></strong> saved steps from last time <span id="laterTask" class="muted"></span></span>
+      </label>
+    </div>
+
+    <form id="setupForm" class="card" novalidate>
+      <div class="grid2">
+        <div>
+          <label for="eventName">What's your next thing?</label>
+          <input id="eventName" placeholder="Lecture, meeting, bus…" autocomplete="off">
+        </div>
+        <div>
+          <label for="eventTime">When does it start?</label>
+          <input id="eventTime" type="datetime-local" required>
+        </div>
+      </div>
+      <div>
+        <label for="buffer">Minutes you need to get ready or travel</label>
+        <input id="buffer" type="number" min="0" max="180" value="10" inputmode="numeric">
+      </div>
+      <div id="taskWrap">
+        <label for="taskInput">What's hanging over you? Add one or more tasks</label>
+        <div class="row">
+          <input id="taskInput" style="flex:1 1 140px;min-width:0;width:auto" placeholder="e.g. finish FYP chapter 3" autocomplete="off">
+          <button type="button" id="addTaskBtn"><svg class="ic"><use href="#i-plus"/></svg>Add</button>
+        </div>
+        <button type="button" id="dumpBtn" class="dump-btn"><svg class="ic"><use href="#i-mic"/></svg><span>Too much in your head? <strong>Brain dump it</strong></span></button>
+        <ul id="taskList" class="steps" style="margin-top:10px"></ul>
+        <div class="row" style="margin-top:6px">
+          <p class="muted small grow">Most important first. Use ↑ to move a task up. Your list is kept for next time.</p>
+          <button type="button" id="clearTasksBtn" class="ghost" hidden><svg class="ic"><use href="#i-trash"/></svg>Clear all</button>
+        </div>
+      </div>
+      <fieldset>
+        <legend>Energy right now</legend>
+        <div class="choices">
+          <label class="choice" style="margin:0;font-weight:400"><input type="radio" name="energy" value="low"><span>Low: tiny steps</span></label>
+          <label class="choice" style="margin:0;font-weight:400"><input type="radio" name="energy" value="ok" checked><span>Okay</span></label>
+        </div>
+      </fieldset>
+      <p id="setupError" class="small" style="color:var(--alarm)" role="alert"></p>
+      <button id="planBtn" class="primary big" type="submit">Find my safe window</button>
+    </form>
+  </section>
+
+  <!-- 2. PLAN -->
+  <section id="plan" class="screen card" aria-labelledby="planTitle" hidden>
+    <h1 id="planTitle" tabindex="-1"></h1>
+    <p id="planSub" class="muted"></p>
+    <ol id="stepList" class="steps"></ol>
+    <p id="planSource" class="muted small"></p>
+    <div class="row">
+      <button id="backBtn" class="ghost"><svg class="ic"><use href="#i-left"/></svg>Change</button>
+      <button id="regenBtn"><svg class="ic"><use href="#i-refresh"/></svg>Different steps</button>
+      <button id="startBtn" class="primary grow">Start step 1</button>
+    </div>
+  </section>
+
+  <!-- 3. FOCUS -->
+  <section id="focus" class="screen card" aria-labelledby="stepText" hidden>
+    <div id="leaveBanner" class="banner"></div>
+    <div class="progress" aria-hidden="true"><div id="progressBar"></div></div>
+    <p id="stepMeta" class="muted small"></p>
+    <h1 id="stepText" class="step-text" tabindex="-1"></h1>
+    <p id="partOf" class="muted small"></p>
+    <div class="disc-wrap" id="discWrap">
+      <svg id="disc" class="disc" viewBox="-12 -24 224 236" aria-hidden="true"></svg>
+      <div class="disc-center">
+        <div id="stepTimer" class="timer" aria-hidden="true">00:00</div>
+        <div class="muted small">left on this step</div>
+        <div id="leaveIn" class="leave-in"></div>
+      </div>
+    </div>
+    <p class="legend small muted" aria-hidden="true">
+      <span><i class="sw sw-cur"></i>this step</span>
+      <span><i class="sw sw-next"></i>next steps</span>
+      <span><i class="sw sw-free"></i>spare time</span>
+      <span><i class="sw sw-leave"></i>top = leave</span>
+    </p>
+    <p id="stepHint" class="muted small" style="text-align:center">Just this. Nothing else.</p>
+    <div class="row">
+      <button id="doneBtn" class="primary grow"><svg class="ic"><use href="#i-check"/></svg>Done</button>
+      <button id="splitBtn"><svg class="ic"><use href="#i-split"/></svg>Too hard: split smaller</button>
+    </div>
+    <div class="row">
+      <button id="pauseBtn" class="ghost"><svg class="ic"><use href="#i-pause"/></svg>Pause</button>
+      <button id="readBtn" class="ghost"><svg class="ic"><use href="#i-volume"/></svg>Read step</button>
+      <button id="skipBtn" class="ghost"><svg class="ic"><use href="#i-skip"/></svg>Skip</button>
+      <button id="endBtn" class="ghost">End early</button>
+    </div>
+    <p class="keys small muted">Keys: D done · S split · K skip · P pause · R read aloud</p>
+  </section>
+
+  <!-- 4. DONE -->
+  <section id="done" class="screen card" aria-labelledby="doneTitle" hidden>
+    <h1 id="doneTitle" tabindex="-1"></h1>
+    <p id="doneMsg"></p>
+    <ul id="doneList" class="steps"></ul>
+    <button id="againBtn" class="primary big">Plan another window</button>
+  </section>
+
+  <p id="live" class="sr" aria-live="polite"></p>
+</div>
+
+<!-- LEAVE ALARM -->
+<div id="alarm" class="overlay" role="alertdialog" aria-labelledby="alarmTitle" aria-describedby="alarmSub" hidden>
+  <div>
+    <h1 id="alarmTitle">Stop. Time to go.</h1>
+    <p id="alarmSub" style="font-size:1.2rem"></p>
+    <button id="goingBtn">I'm going</button>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" hidden></div>
+
+<!-- BRAIN DUMP -->
+<dialog id="dumpDlg" aria-labelledby="dumpTitle">
+  <div class="card">
+    <h2 id="dumpTitle">Brain dump</h2>
+    <p class="muted small">Say everything on your mind. Messy is fine. I'll turn it into a task list.</p>
+    <div class="row">
+      <button type="button" id="micBtn" class="primary mic grow" aria-pressed="false"><svg class="ic"><use href="#i-mic"/></svg>Start talking</button>
+      <select id="dumpLang" aria-label="Speech language" style="width:auto">
+        <option value="en-US">English</option>
+        <option value="en-GB">English (UK)</option>
+        <option value="ms-MY">Bahasa Melayu</option>
+      </select>
+    </div>
+    <p id="micStatus" class="muted small" aria-live="polite"></p>
+    <div>
+      <label for="dumpText">What you said (edit, or just type here)</label>
+      <textarea id="dumpText" rows="5" placeholder="e.g. ugh okay I need to finish chapter 3, reply Dr Lee's email, and do laundry before Friday"></textarea>
+      <p id="dumpInterim" class="muted small" aria-hidden="true"></p>
+    </div>
+    <div class="row">
+      <button type="button" id="dumpCancel" class="ghost">Cancel</button>
+      <button type="button" id="dumpGo" class="primary grow">Make my list</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- SETTINGS -->
+<dialog id="settings" aria-labelledby="settingsTitle">
+  <form method="dialog" class="card">
+    <h2 id="settingsTitle">Settings</h2>
+    <div>
+      <label for="warnMins">Heads-up before leaving (minutes)</label>
+      <input id="warnMins" type="number" min="1" max="30" value="5">
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="textSize">Text size</label>
+        <select id="textSize"><option value="1">Normal</option><option value="1.15">Large</option><option value="1.3">Extra large</option></select>
+      </div>
+      <div>
+        <label for="theme">Theme</label>
+        <select id="theme"><option value="">Match device</option><option value="light">Light</option><option value="dark">Dark</option></select>
+      </div>
+    </div>
+    <div>
+      <label for="provider">AI provider (optional, for smarter steps)</label>
+      <select id="provider"><option value="anthropic">Anthropic (Claude)</option><option value="gemini">Google Gemini</option></select>
+    </div>
+    <div>
+      <label for="apiKey">API key</label>
+      <input id="apiKey" type="password" autocomplete="off" placeholder="Leave empty to use the built-in planner">
+      <p class="muted small">Stored only in this browser, never in the code.</p>
+    </div>
+    <div>
+      <label for="model">Model</label>
+      <input id="model" autocomplete="off">
+    </div>
+    <div class="row">
+      <button type="button" id="testSound"><svg class="ic"><use href="#i-bell"/></svg>Test sounds</button>
+      <button value="close" class="primary grow">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="app.js"></script>
+</body>
+</html>
